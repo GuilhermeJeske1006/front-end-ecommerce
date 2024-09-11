@@ -78,6 +78,7 @@ const updateTable = computed(() => {
     editar.value.categoria_id = produto.produto.categoria_id;
     editar.value.material = produto.produto.material;
     editar.value.descricao = produto.produto.descricao;
+    editar.value.descricao_longa = produto.produto.descricao_longa;
     editar.value.produto_destaque = produto.produto.produto_destaque;
     editar.value.ir_para_site = produto.produto.ir_para_site;
     editar.value.foto = produto.produto.foto;

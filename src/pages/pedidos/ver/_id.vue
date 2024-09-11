@@ -39,69 +39,19 @@ const formaPagamento = computed(() => {
   }
 });
 
-const statusPagamento = computed(() => {
-  const status = pedido.value.status;
-
-  if (status === "PAID") {
-    return "Pago";
-  } else if (status === "WAITING_PAYMENT") {
-    return "Aguardando pagamento";
-  } else if (status === "CANCELED") {
-    return "Cancelado";
-  } else {
-    return "Não informado";
-  }
-});
-
-const statusEnvio = computed(() => {
-  const status = pedido.value.envio?.status;
-
-  if (status === "pending") {
-    return {
-      status: "Pendente",
-      id: 0,
-    };
-  } else if (status === "Waiting for product payment") {
-    return {
-      status: "Aguardando pagamento do produto",
-      id: 1,
-    };
-  } else if (status === "released") {
-    return {
-      status: "Liberado",
-      id: 2,
-    };
-  } else if (status === "posted") {
-    return {
-      status: "Postado",
-      id: 3,
-    };
-  } else if (status === "delivered") {
-    return {
-      status: "Entregue",
-      id: 4,
-    };
-  } else if (status === "canceled") {
-    return {
-      status: "Cancelado",
-      id: 5,
-    };
-  } else if (status === "undelivered") {
-    return {
-      status: "Não entregue",
-      id: 6,
-    };
-  } else {
-    return "Não informado";
-  }
-});
-
 watch(
   updateTableData,
   (newValue) => {
     pedido.value = newValue;
   },
   { immediate: true }
+);
+
+watch(
+  () => order?.pedido,
+  (newValue) => {
+    pedido.value = newValue;
+  }
 );
 </script>
 
@@ -125,7 +75,7 @@ watch(
 
                 <p class="d-flex align-center mb-6">
                   <VIcon color="primary" icon="bx-select-multiple" />
-                  <span class="ms-3">{{ statusPagamento }}</span>
+                  <span class="ms-3">{{ pedido.status_pedido_nome }}</span>
                 </p>
               </div>
 
@@ -255,7 +205,7 @@ watch(
 
               <p class="d-flex align-center mb-6">
                 <span class="ms-3 font-weight-black">STATUS: </span>
-                <span class="ms-3">{{ statusEnvio.status }}</span>
+                <span class="ms-3">{{ pedido.envio?.status_envio }}</span>
               </p>
 
               <p class="d-flex align-center mb-6">
@@ -267,10 +217,10 @@ watch(
                 <span class="ms-3 font-weight-black">SERVIÇO: </span>
                 <span class="ms-3">{{ pedido.envio?.servico }}</span>
               </p>
-              <div>
+              <div v-if="pedido.status_pedido_id == 2">
                 <VBtn
                   class="mt-8"
-                  v-if="statusEnvio.id == 0"
+                  v-if="pedido.envio?.status_envio_id == 1"
                   @click="order.modalPagarEnvio = true"
                 >
                   Pagar envio

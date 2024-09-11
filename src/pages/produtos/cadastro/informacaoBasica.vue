@@ -143,9 +143,15 @@
                 <VCol cols="12" md="12">
                   <v-textarea
                     v-model="item.descricao"
-                    label="Descrição sobre o produto"
+                    label="Descrição curta do produto"
                     placeholder="ex: 1"
                   />
+                </VCol>
+                <VCol md="12" cols="12">
+                  <ckeditor
+                    :editor="editor"
+                    v-model="item.descricao_longa"
+                  ></ckeditor>
                 </VCol>
                 <!-- 👉 Form Actions -->
                 <VCol cols="12" class="d-flex flex-wrap gap-4">
@@ -161,6 +167,7 @@
 </template>
 
 <script setup>
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { defineEmits, defineProps, ref } from "vue";
 
 const props = defineProps({
@@ -180,6 +187,7 @@ const refInputEl = ref();
 const accountDataLocal = ref(
   structuredClone(JSON.parse(JSON.stringify(props.item)))
 );
+const editor = ref(ClassicEditor);
 
 const formatValor = (event) => {
   let value = event.target.value.replace(/\D/g, "");

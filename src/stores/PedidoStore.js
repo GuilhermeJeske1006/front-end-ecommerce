@@ -22,13 +22,16 @@ export const usePedidoStore = defineStore('pedido', {
 
   actions: {
     PedidoListar(page) {
-      this.isLoading = true
-
+      this.isLoading = true;
+    
       return new Promise((resolve, reject) => {
         axios
-          .get(`pedidos/gestao/${this.empresa_id}`
-          , { params: {name: this.filtrar, page: page } }
-          )
+          .get(`pedidos/gestao/${this.empresa_id}`, {
+            params: { 
+              ...this.filtrar,  
+              page              
+            }
+          })
           .then((res) => {
             this.pedidos = res.data;
             resolve();
@@ -37,10 +40,11 @@ export const usePedidoStore = defineStore('pedido', {
             reject(error);
           })
           .finally(() => {
-            this.isLoading = false; // Defina o estado isLoading como false após a chamada
+            this.isLoading = false; 
           });
       });
     },
+    
 
     pedidoMostrar(id) {
         this.isLoading = true

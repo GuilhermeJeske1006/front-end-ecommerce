@@ -96,6 +96,7 @@ const cadastro = ref({
   peso: "",
   material: "",
   descricao: "",
+  descricao_longa: "",
   ir_para_site: true,
   produto_destaque: false,
   itens: [],

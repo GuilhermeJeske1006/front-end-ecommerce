@@ -1,7 +1,7 @@
 <script setup>
-import Filter from "@/components/filter.vue";
 import loading from "@/components/geral/LoadingOverlay.vue";
 import CardPedido from "@/components/pedido/cardPedido.vue";
+import filterPedido from "@/components/pedido/filterPedido.vue";
 import modalImprimirEtiqueta from "@/components/pedido/modalImprimirEtiqueta.vue";
 import modalPegarEnvio from "@/components/pedido/modalPagarEnvio.vue";
 import router from "@/router";
@@ -11,15 +11,10 @@ import { onMounted } from "vue";
 
 const produto = useProdutoStore();
 const pedido = usePedidoStore();
-const produtoId = ref(null);
+const pedidoSelecionado = ref(null);
 const tableData = ref([]);
 const tableColumns = ref([]);
-const actions = ref([
-  "Ver",
-  "Pagar envio",
-  "Imprimir etiqueta",
-  "Rastrear envio",
-]);
+const actions = ref(["Ver", "Pagar envio", "Imprimir etiqueta"]);
 
 const updateTableData = (items) => {
   return items.map((item) => ({
@@ -30,12 +25,20 @@ const updateTableData = (items) => {
     status_envio: item.envio.status,
     forma_pagamento: item.forma_pagamento,
     dt_item: item.dt_item,
+    ...item,
   }));
 };
 
 const handleActionClick = (action, item) => {
   if (action === "Ver") {
     router.push({ path: `/pedidos/ver/${item.id}` });
+  } else if (action === "Pagar envio") {
+    console.log("Pagar envio", item);
+    pedidoSelecionado.value = item;
+    pedido.modalPagarEnvio = true;
+  } else if (action === "Imprimir etiqueta") {
+    pedidoSelecionado.value = item;
+    pedido.modalImprimirEtiqueta = true;
   }
 };
 onMounted(async () => {
@@ -75,15 +78,15 @@ watch(
 
 <template>
   <loading :is-loading="pedido.isLoading" />
-  <modalImprimirEtiqueta :pedido="pedido" />
-  <modalPegarEnvio :pedido="pedido" />
+  <modalImprimirEtiqueta :pedido="pedidoSelecionado" />
+  <modalPegarEnvio :pedido="pedidoSelecionado" />
   <VRow>
     <VCol cols="12">
       <VCard title="Listagem de Pedidos">
         <VCardText>Veja a lista de todos os seus pedidos abaixo</VCardText>
 
         <VCardText>
-          <Filter
+          <filterPedido
             :placeholder="'Busque pelo nome'"
             :label="'Nome'"
             @action-click="searchResult"
